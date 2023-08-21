@@ -1,0 +1,16 @@
+Первй работающая под VScode (Platformio) MQTT пример. 
+Для 
+
+#[env:esp32dev]
+#platform = espressif32
+#board = esp32dev
+
+и
+
+[env:esp32-s2-saola-1]
+platform = espressif32
+board = esp32-s2-saola-1
+
+Выбрать нужный board и убрать #
+
+Библиотека marvinroger/AsyncMqttClient@^0.9.0 и 
