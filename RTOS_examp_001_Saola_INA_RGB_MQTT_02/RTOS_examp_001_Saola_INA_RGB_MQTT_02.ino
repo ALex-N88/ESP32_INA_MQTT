@@ -42,8 +42,18 @@ TimerHandle_t wifiReconnectTimer;
 static const int rate_1 = 250;  // LED On ms
 static const int rate_2 = 1777;  // LED Off ms
 static const int rate_3 = 1500;  // INA Pause ms
-float Voltage = 0;
-char Volt;
+
+float Voltage;
+String Voltage_string ;
+char Voltage_char[8];
+
+float Current;
+String Current_string ;
+char Current_char[8];
+
+float Power;
+String Power_string ;
+char Power_char[8];
 
 // Pins
 
@@ -76,28 +86,31 @@ void toggleLED_RGB(void *parameter) {
 // Our task 2: INA + Serial out
 void INA_read(void *parameter) {
   while(1) {
-  Serial.print(F("Voltage: "));
-  Voltage = (ina.getVoltage());
-  Serial.print(ina.getVoltage(), 3);
-//  Serial.print(Voltage);
-  Serial.println(F(" V"));
 
-  uint16_t packetIdPub1 = mqttClient.publish("Oleh_N/esp32/Voltage", 1, true, "5 Amp");
+  Serial.print(F("Voltage: "));
+  Voltage_string = String(ina.getVoltage(), 3)+String(" V");
+  Voltage_string.toCharArray(Voltage_char,8);
+  Serial.println(Voltage_string);
+  mqttClient.publish("Oleh_N/esp32/Voltage", 1, true, Voltage_char);
 
   // Читаем ток
   Serial.print(F("Current: "));
-  Serial.print(ina.getCurrent(), 3);
-  Serial.println(F(" A"));
+  Current_string = String(ina.getCurrent(), 3)+String(" A");
+  Current_string.toCharArray(Current_char,8);
+  Serial.println(Current_string);
+  mqttClient.publish("Oleh_N/esp32/Current", 1, true, Current_char);
 
   // Читаем мощность
   Serial.print(F("Power: "));
-  Serial.print(ina.getPower(), 3);
-  Serial.println(F(" W"));
+  Power_string = String(ina.getPower(), 3)+String(" W");
+  Power_string.toCharArray(Power_char,8);
+  Serial.println(Power_string);
+  mqttClient.publish("Oleh_N/esp32/Power", 1, true, Power_char);
 
   // Читаем напряжение на шунте
-  Serial.print(F("Shunt voltage: "));
-  Serial.print(ina.getShuntVoltage(), 6);
-  Serial.println(F(" V"));
+//  Serial.print(F("Shunt voltage: "));
+//  Serial.print(ina.getShuntVoltage(), 6);
+//  Serial.println(F(" V"));
 
   Serial.println("");
   vTaskDelay(rate_3);;
@@ -138,19 +151,19 @@ void onMqttConnect(bool sessionPresent) {
   Serial.print("Session present: ");
   Serial.println(sessionPresent);
   uint16_t packetIdSub = mqttClient.subscribe("Oleh_N/esp32/Command", 2);
-  Serial.print("Subscribing at QoS 2, packetId: ");
-  Serial.println(packetIdSub);
-  mqttClient.publish("Oleh_N/esp32/lol_01", 0, true, "test 1");
-  Serial.println("Publishing at QoS 0");
-  uint16_t packetIdPub1 = mqttClient.publish("Oleh_N/esp32/Voltage", 1, true, "Test 0V");
-  Serial.print("Publishing at QoS 1, packetId: ");
-  Serial.println(packetIdPub1);
-  uint16_t packetIdPub2 = mqttClient.publish("Oleh_N/esp32/Current", 2, true, "Test 0A");
-  Serial.print("Publishing at QoS 2, packetId: ");
-  Serial.println(packetIdPub2);
-  uint16_t packetIdPub3 = mqttClient.publish("Oleh_N/esp32/Power", 2, true, "Test 0W");
-  Serial.print("Publishing at QoS 2, packetId: ");
-  Serial.println(packetIdPub2);
+//  Serial.print("Subscribing at QoS 2, packetId: ");
+//  Serial.println(packetIdSub);
+//  mqttClient.publish("Oleh_N/esp32/lol_01", 0, true, "test 1");
+//  Serial.println("Publishing at QoS 0");
+//  uint16_t packetIdPub1 = mqttClient.publish("Oleh_N/esp32/Voltage", 1, true, "Test 0V");
+//  Serial.print("Publishing at QoS 1, packetId: ");
+//  Serial.println(packetIdPub1);
+//  uint16_t packetIdPub2 = mqttClient.publish("Oleh_N/esp32/Current", 2, true, "Test 0A");
+//  Serial.print("Publishing at QoS 2, packetId: ");
+//  Serial.println(packetIdPub2);
+//  uint16_t packetIdPub3 = mqttClient.publish("Oleh_N/esp32/Power", 2, true, "Test 0W");
+//  Serial.print("Publishing at QoS 2, packetId: ");
+//  Serial.println(packetIdPub2);
 }
 
 void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
@@ -194,9 +207,9 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
 }
 
 void onMqttPublish(uint16_t packetId) {
-  Serial.println("Publish acknowledged.");
-  Serial.print("  packetId: ");
-  Serial.println(packetId);
+//  Serial.println("Publish acknowledged.");
+//  Serial.print("  packetId: ");
+//  Serial.println(packetId);
 }
 
 //**************************************************************************************
