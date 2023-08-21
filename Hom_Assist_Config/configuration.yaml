@@ -1,0 +1,32 @@
+
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+mqtt:
+  switch:
+    - name: My_switch_01
+      state_topic: "Oleg_N/Home_01/Rel_1"
+#      command_topic: "Oleg_N/Home_01/Switch_1"
+      command_topic: "Oleg_N/Home_01/Rel_1"
+      payload_on: "1"
+      payload_off: "0"
+      
+  binary_sensor:
+    - name: Door_sens_01
+      state_topic: "Oleg_N/Home_01/Key_1"
+      device_class: door
+      payload_on: "1"
+      payload_off: "0"      
+
+  sensor:
+    - name: Temp DS_1
+      state_topic: "Oleg_N/Home_01/DS_1"
+      unit_of_measurement: "`C"
