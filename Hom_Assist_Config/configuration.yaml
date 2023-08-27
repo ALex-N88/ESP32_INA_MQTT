@@ -30,3 +30,16 @@ mqtt:
     - name: Temp DS_1
       state_topic: "Oleg_N/Home_01/DS_1"
       unit_of_measurement: "`C"
+
+    - name: Voltage INA
+      state_topic: "Oleg_N/Home_01/Voltage"
+      unit_of_measurement: "V"
+
+    - name: Current INA
+      state_topic: "Oleg_N/Home_01/Current"
+      unit_of_measurement: "A"   
+
+    - name: Power INA
+      state_topic: "Oleg_N/Home_01/Power"
+      unit_of_measurement: "W"
+      
